@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Quadratic Equation Graph</title>
+    <style>
+        :root {
+            --background-color: #f0f4f8;
+            --card-background: #ffffff;
+            --text-color: #333;
+            --primary-color: #4a90e2;
+            --border-color: #d1d9e6;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .container {
+            background-color: var(--card-background);
+            border-radius: 12px;
+            box-shadow: 0 10px 25px var(--shadow-color);
+            padding: 2.5rem;
+            width: 100%;
+            max-width: 1000px; /* Increased max-width for horizontal layout */
+            display: flex;
+            flex-direction: column; /* Stack equations and main content vertically */
+            align-items: center; /* Center content horizontally */
+            gap: 1.5rem; /* Space between equations and main content */
+        }
+
+        .main-content-area {
+            display: flex;
+            justify-content: center;
+            gap: 2rem; /* Space between canvas and controls */
+            width: 100%; /* Take full width of the container */
+            flex-wrap: wrap; /* Allow wrapping on smaller screens */
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin-top: 0;
+            margin-bottom: 0rem; /* Handled by container gap */
+        }
+        
+        .equation-section {
+            margin-bottom: 0.5rem; /* Reduced margin, as container has gap */
+            text-align: left;
+            width: 100%; /* Ensure equations span full width */
+        }
+
+        .equation-section h2 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            color: #555;
+            font-weight: 600;
+        }
+        
+        #equation-display, #vertex-equation-display, #factored-equation-display {
+            font-size: 1.3rem; /* Slightly smaller for better fit */
+            font-weight: 500;
+            margin-bottom: 0rem; /* No bottom margin, handled by equation-section */
+            color: var(--primary-color);
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+            padding: 0.5rem;
+            background: #f7f7f7;
+            border-radius: 6px;
+            text-align: center; /* Center the equation text */
+        }
+
+        .equation-display-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        canvas {
+            background-color: #ffffff;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            /* width: 100%; No longer need 100% width, it has intrinsic width */
+            flex-shrink: 0; /* Prevent canvas from shrinking */
+        }
+
+        .controls {
+            margin-top: 0rem; /* No top margin, handled by gap in main-content-area */
+            display: flex;
+            flex-direction: column; /* Stack slider groups vertically */
+            gap: 1rem; /* Reduced gap between slider groups */
+            flex-grow: 1; /* Allow controls to take available space */
+            min-width: 300px; /* Ensure controls don't get too small */
+            text-align: left; /* Align slider headings to left */
+        }
+
+        .slider-group-heading {
+            font-size: 1.2rem;
+            color: #555;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            text-align: left;
+        }
+
+
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .control-group label {
+            font-size: 1.2rem;
+            font-weight: 600;
+            width: 20px;
+        }
+
+        .control-group input[type="range"] {
+            flex-grow: 1;
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 8px;
+            background: var(--border-color);
+            border-radius: 5px;
+            outline: none;
+            opacity: 0.9;
+            transition: opacity .2s;
+        }
+
+        .control-group input[type="range"]:hover {
+            opacity: 1;
+        }
+
+        .control-group input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: var(--primary-color);
+            cursor: pointer;
+            border-radius: 50%;
+        }
+
+        .control-group input[type="range"]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            background: var(--primary-color);
+            cursor: pointer;
+            border-radius: 50%;
+        }
+
+        .control-group input[type="range"]:disabled {
+            background: #e9ecef;
+            cursor: not-allowed;
+        }
+
+        .control-group input[type="range"]:disabled::-webkit-slider-thumb {
+            background: #adb5bd;
+        }
+
+        .control-group input[type="range"]:disabled::-moz-range-thumb {
+            background: #adb5bd;
+        }
+        
+        .control-group label.disabled {
+            color: #adb5bd;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Quadratic Equation Explorer</h1>
+        
+        <div class="equation-section">
+            <h2>Standard Form:</h2>
+            <div id="equation-display">y = 1.0x² + 0.0x + 0.0</div>
+        </div>
+
+        <div class="equation-section">
+            <h2>Vertex Form:</h2>
+            <div id="vertex-equation-display">y = 1.0(x - 0.0)² + 0.0</div>
+        </div>
+
+        <div class="equation-section">
+            <h2>Factored Form:</h2>
+            <div id="factored-equation-display">y = 1.0(x - 1.0)(x - (-1.0))</div>
+        </div>
+        
+        <div class="main-content-area">
+            <canvas id="graphCanvas" width="500" height="500"></canvas>
+
+            <div class="controls">
+                <h3 class="slider-group-heading">Standard Form: y = ax² + bx + c</h3>
+                <div class="control-group">
+                    <label for="sliderA">a</label>
+                    <input type="range" id="sliderA" min="-5" max="5" value="1" step="0.1">
+                    <span id="valueA">1.0</span>
+                </div>
+                <div class="control-group">
+                    <label for="sliderB">b</label>
+                    <input type="range" id="sliderB" min="-20" max="20" value="0" step="0.1">
+                    <span id="valueB">0.0</span>
+                </div>
+                <div class="control-group">
+                    <label for="sliderC">c</label>
+                    <input type="range" id="sliderC" min="-20" max="20" value="-1" step="0.1">
+                    <span id="valueC">-1.0</span>
+                </div>
+                
+                <h3 class="slider-group-heading" style="margin-top: 1rem;">Vertex Form: y = a(x - h)² + k</h3>
+                <div class="control-group">
+                    <label for="sliderH">h</label>
+                    <input type="range" id="sliderH" min="-10" max="10" value="0" step="0.1">
+                    <span id="valueH">0.0</span>
+                </div>
+                <div class="control-group">
+                    <label for="sliderK">k</label>
+                    <input type="range" id="sliderK" min="-10" max="10" value="-1" step="0.1">
+                    <span id="valueK">-1.0</span>
+                </div>
+
+                <h3 class="slider-group-heading" style="margin-top: 1rem;">Factored Form: y = a(x - r₁)(x - r₂)</h3>
+                <div class="control-group">
+                    <label for="sliderR1" id="labelR1">r₁</label>
+                    <input type="range" id="sliderR1" min="-10" max="10" value="1" step="0.1">
+                    <span id="valueR1">1.0</span>
+                </div>
+                <div class="control-group">
+                    <label for="sliderR2" id="labelR2">r₂</label>
+                    <input type="range" id="sliderR2" min="-10" max="10" value="-1" step="0.1">
+                    <span id="valueR2">-1.0</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const canvas = document.getElementById('graphCanvas');
+            const ctx = canvas.getContext('2d');
+
+            const sliders = {
+                a: document.getElementById('sliderA'),
+                b: document.getElementById('sliderB'),
+                c: document.getElementById('sliderC'),
+                h: document.getElementById('sliderH'),
+                k: document.getElementById('sliderK'),
+                r1: document.getElementById('sliderR1'),
+                r2: document.getElementById('sliderR2'),
+            };
+
+            const values = {
+                a: document.getElementById('valueA'),
+                b: document.getElementById('valueB'),
+                c: document.getElementById('valueC'),
+                h: document.getElementById('valueH'),
+                k: document.getElementById('valueK'),
+                r1: document.getElementById('valueR1'),
+                r2: document.getElementById('valueR2'),
+            };
+            
+            const labels = {
+                r1: document.getElementById('labelR1'),
+                r2: document.getElementById('labelR2'),
+            }
+
+            const displays = {
+                standard: document.getElementById('equation-display'),
+                vertex: document.getElementById('vertex-equation-display'),
+                factored: document.getElementById('factored-equation-display'),
+            };
+
+            const width = canvas.width;
+            const height = canvas.height;
+            const scale = 25;
+            const originX = width / 2;
+            const originY = height / 2;
+
+            function updateFromStandard() {
+                const a = parseFloat(sliders.a.value);
+                const b = parseFloat(sliders.b.value);
+                const c = parseFloat(sliders.c.value);
+
+                // Update vertex form
+                if (a !== 0) {
+                    const h = -b / (2 * a);
+                    const k = a * h * h + b * h + c;
+                    sliders.h.value = h;
+                    sliders.k.value = k;
+                }
+                
+                updateUIAndDraw(a,b,c);
+            }
+
+            function updateFromVertex() {
+                const a = parseFloat(sliders.a.value);
+                const h = parseFloat(sliders.h.value);
+                const k = parseFloat(sliders.k.value);
+
+                const b = -2 * a * h;
+                const c = a * h * h + k;
+                
+                sliders.b.value = b;
+                sliders.c.value = c;
+
+                updateUIAndDraw(a,b,c);
+            }
+
+            function updateFromFactored() {
+                const a = parseFloat(sliders.a.value);
+                const r1 = parseFloat(sliders.r1.value);
+                const r2 = parseFloat(sliders.r2.value);
+
+                // b = -a(r1+r2), c = a*r1*r2
+                const b = -a * (r1 + r2);
+                const c = a * r1 * r2;
+                sliders.b.value = b;
+                sliders.c.value = c;
+                
+                // Also update vertex form
+                const h = (r1 + r2) / 2;
+                const k = a * (h - r1) * (h - r2);
+                sliders.h.value = h;
+                sliders.k.value = k;
+
+                updateUIAndDraw(a,b,c);
+            }
+            
+            function updateUIAndDraw(a, b, c) {
+                // Update all value displays from final slider positions
+                for(const key in values) {
+                    values[key].textContent = parseFloat(sliders[key].value).toFixed(1);
+                }
+
+                // Update standard equation string
+                displays.standard.textContent = `y = ${a.toFixed(1)}x² ${b >= 0 ? '+' : '-'} ${Math.abs(b).toFixed(1)}x ${c >= 0 ? '+' : '-'} ${Math.abs(c).toFixed(1)}`;
+                
+                // Update vertex equation string
+                const h = parseFloat(sliders.h.value);
+                const k = parseFloat(sliders.k.value);
+                displays.vertex.textContent = `y = ${a.toFixed(1)}(x${h > 0 ? '-' : '+'}${Math.abs(h).toFixed(1)})² ${k >= 0 ? '+' : '-'} ${Math.abs(k).toFixed(1)}`;
+
+                // Update factored form (conditionally)
+                const discriminant = b * b - 4 * a * c;
+                if (discriminant >= 0 && a !== 0) {
+                    sliders.r1.disabled = false;
+                    sliders.r2.disabled = false;
+                    labels.r1.classList.remove('disabled');
+                    labels.r2.classList.remove('disabled');
+
+                    const r1 = (-b + Math.sqrt(discriminant)) / (2 * a);
+                    const r2 = (-b - Math.sqrt(discriminant)) / (2 * a);
+                    sliders.r1.value = r1;
+                    sliders.r2.value = r2;
+                    values.r1.textContent = r1.toFixed(1);
+                    values.r2.textContent = r2.toFixed(1);
+
+                    displays.factored.textContent = `y = ${a.toFixed(1)}(x${r1 > 0 ? '-' : '+'}${Math.abs(r1).toFixed(1)})(x${r2 > 0 ? '-' : '+'}${Math.abs(r2).toFixed(1)})`;
+
+                } else {
+                    sliders.r1.disabled = true;
+                    sliders.r2.disabled = true;
+                    labels.r1.classList.add('disabled');
+                    labels.r2.classList.add('disabled');
+                    displays.factored.textContent = "No real roots exist";
+                }
+
+                drawGraph(a, b, c);
+            }
+
+            function drawGraph(a, b, c) {
+                ctx.clearRect(0, 0, width, height);
+                ctx.save();
+                ctx.translate(originX, originY);
+                
+                // Draw Axes & Grid
+                ctx.beginPath(); ctx.moveTo(-originX, 0); ctx.lineTo(originX, 0); ctx.moveTo(0, -originY); ctx.lineTo(0, originY);
+                ctx.strokeStyle = '#ccc'; ctx.lineWidth = 1; ctx.stroke();
+                ctx.strokeStyle = '#eef';
+                for (let i = scale; i < originX; i += scale) { ctx.beginPath(); ctx.moveTo(i, -originY); ctx.lineTo(i, originY); ctx.moveTo(-i, -originY); ctx.lineTo(-i, originY); ctx.stroke(); }
+                for (let i = scale; i < originY; i += scale) { ctx.beginPath(); ctx.moveTo(-originX, i); ctx.lineTo(originX, i); ctx.moveTo(-originX, -i); ctx.lineTo(originX, -i); ctx.stroke(); }
+
+                // Draw curve
+                ctx.beginPath(); ctx.strokeStyle = '#4a90e2'; ctx.lineWidth = 2.5;
+                for (let px = -originX; px <= originX; px++) {
+                    const x = px / scale;
+                    const y = a * x * x + b * x + c;
+                    if (px === -originX) { ctx.moveTo(px, -y * scale); } 
+                    else { ctx.lineTo(px, -y * scale); }
+                }
+                ctx.stroke();
+                ctx.restore();
+            }
+
+            sliders.a.addEventListener('input', updateFromVertex); // Use vertex or factored as base when 'a' changes
+            sliders.b.addEventListener('input', updateFromStandard);
+            sliders.c.addEventListener('input', updateFromStandard);
+
+            sliders.h.addEventListener('input', updateFromVertex);
+            sliders.k.addEventListener('input', updateFromVertex);
+
+            sliders.r1.addEventListener('input', updateFromFactored);
+            sliders.r2.addEventListener('input', updateFromFactored);
+
+            // Initial setup to sync all forms
+            updateFromStandard();
+        });
+    </script>
+
+</body>
+</html>
