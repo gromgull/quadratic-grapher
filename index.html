@@ -4,6 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Maths Tools</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M4 4Q16 52 28 4' fill='none' stroke='%234a90e2' stroke-width='4'/%3E%3C/svg%3E"
+    />
     <link rel="stylesheet" href="/src/style.css" />
     <script type="module" src="/src/main.js"></script>
   </head>
@@ -11,6 +15,7 @@
     <header>
       <nav class="tabs" role="tablist">
         <a href="#quadratic" role="tab" data-tab="quadratic">Quadratic</a>
+        <a href="#transform" role="tab" data-tab="transform">Transformations</a>
       </nav>
     </header>
 
@@ -18,7 +23,7 @@
       <section data-panel="quadratic" class="tab-panel card" role="tabpanel">
         <h1>Quadratic Equation Explorer</h1>
 
-        <div class="quadratic-layout">
+        <div class="tool-layout">
           <div class="graph">
             <canvas aria-label="Graph of the quadratic equation"></canvas>
           </div>
@@ -76,6 +81,51 @@
             </fieldset>
           </div>
         </div>
+      </section>
+      <section data-panel="transform" class="tab-panel card" role="tabpanel" hidden>
+        <h1>Function Transformations</h1>
+
+        <div class="tool-layout">
+          <div class="graph">
+            <canvas aria-label="Graph of the transformed functions"></canvas>
+          </div>
+
+          <div class="controls">
+            <fieldset class="layer" data-index="0">
+              <legend><span class="swatch"></span><span data-definition></span></legend>
+              <div class="control">
+                <label for="slider-n">n</label>
+                <input type="range" id="slider-n" data-param="n" min="-3" max="6" step="1" value="2" />
+                <output data-param="n"></output>
+              </div>
+            </fieldset>
+
+            <ol class="layers"></ol>
+
+            <button type="button" class="add-layer" data-action="add">+ Add transformation</button>
+          </div>
+        </div>
+
+        <template data-layer-template>
+          <li class="layer">
+            <div class="layer-header">
+              <span class="swatch"></span>
+              <span data-definition></span>
+              <button type="button" class="remove-layer" data-action="remove" aria-label="Remove transformation">×</button>
+            </div>
+            <select data-type aria-label="Transformation">
+              <option value="shiftX">f(x + a) — shift left/right</option>
+              <option value="scaleX">f(a·x) — stretch horizontally</option>
+              <option value="scaleY">a·f(x) — stretch vertically</option>
+              <option value="shiftY">f(x) + a — shift up/down</option>
+            </select>
+            <div class="control">
+              <span class="label">a</span>
+              <input type="range" data-param="a" min="-5" max="5" step="0.1" aria-label="a" />
+              <output data-param="a"></output>
+            </div>
+          </li>
+        </template>
       </section>
     </main>
   </body>

@@ -1,3 +1,5 @@
+import { coeff, fmt, signed } from '../lib/format.js';
+
 // Pure maths for y = ax² + bx + c and its vertex / factored forms.
 // The state object holds all seven parameters; each update function takes
 // one form as the source of truth and recomputes the others.
@@ -53,25 +55,9 @@ export function evaluate(s, x) {
 
 // --- Formatting ---
 
-export function fmt(n) {
-  const r = Math.round(n * 100) / 100;
-  return (Object.is(r, -0) ? 0 : r).toString();
-}
-
-// " + 3" / " − 3", or "" when the value rounds to zero.
-function signed(n, suffix = '') {
-  if (fmt(n) === '0') return '';
-  return `${n < 0 ? ' − ' : ' + '}${fmt(Math.abs(n))}${suffix}`;
-}
-
 // "(x − 2)" / "(x + 2)" / "x"
 function shifted(root) {
   return fmt(root) === '0' ? 'x' : `(x${root > 0 ? ' − ' : ' + '}${fmt(Math.abs(root))})`;
-}
-
-function coeff(a) {
-  const f = fmt(a);
-  return f === '1' ? '' : f === '-1' ? '−' : f.replace('-', '−');
 }
 
 export function formatStandard({ a, b, c }) {

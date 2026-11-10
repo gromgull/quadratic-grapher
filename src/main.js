@@ -1,8 +1,10 @@
 import { initQuadratic } from './quadratic/index.js';
+import { initTransform } from './transform/index.js';
 
 // Each tab is a <section class="tab-panel" data-panel="..."> plus a matching nav link.
 const TOOLS = {
   quadratic: initQuadratic,
+  transform: initTransform,
 };
 
 const tabs = [...document.querySelectorAll('[data-tab]')];

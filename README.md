@@ -3,6 +3,8 @@
 Interactive maths tools, built as a static site.
 
 - **Quadratic** – graph a quadratic equation and adjust the coefficients in standard, vertex or factored form.
+- **Transformations** – start from f₀(x) = xⁿ and stack transformations (f(x + a), f(a·x), a·f(x), f(x) + a),
+  seeing every intermediate function on one graph.
 
 Originally 100% vibe coded with Gemini 2.5 :D
 

@@ -1,7 +1,7 @@
+import { fmt } from '../lib/format.js';
 import { createGraph } from './graph.js';
 import {
   createState,
-  fmt,
   formatFactored,
   formatStandard,
   formatVertex,
