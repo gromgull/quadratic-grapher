@@ -1,0 +1,17 @@
+{
+  "name": "maths",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Interactive maths tools: quadratic equation grapher and more.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "vite": "^8.3.7",
+    "vitest": "^4.1.12"
+  }
+}

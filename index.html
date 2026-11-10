@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Maths Tools</title>
+    <link rel="stylesheet" href="/src/style.css" />
+    <script type="module" src="/src/main.js"></script>
+  </head>
+  <body>
+    <header>
+      <nav class="tabs" role="tablist">
+        <a href="#quadratic" role="tab" data-tab="quadratic">Quadratic</a>
+      </nav>
+    </header>
+
+    <main>
+      <section data-panel="quadratic" class="tab-panel card" role="tabpanel">
+        <h1>Quadratic Equation Explorer</h1>
+
+        <div class="quadratic-layout">
+          <div class="graph">
+            <canvas aria-label="Graph of the quadratic equation"></canvas>
+          </div>
+
+          <div class="controls">
+            <div class="control">
+              <label for="slider-a">a</label>
+              <input type="range" id="slider-a" data-param="a" min="-5" max="5" step="0.1" />
+              <output data-param="a"></output>
+            </div>
+
+            <fieldset>
+              <legend>Standard form <span class="template">y = ax² + bx + c</span></legend>
+              <div class="equation" data-equation="standard"></div>
+              <div class="control">
+                <label for="slider-b">b</label>
+                <input type="range" id="slider-b" data-param="b" data-form="standard" min="-20" max="20" step="0.1" />
+                <output data-param="b"></output>
+              </div>
+              <div class="control">
+                <label for="slider-c">c</label>
+                <input type="range" id="slider-c" data-param="c" data-form="standard" min="-20" max="20" step="0.1" />
+                <output data-param="c"></output>
+              </div>
+            </fieldset>
+
+            <fieldset>
+              <legend>Vertex form <span class="template">y = a(x − h)² + k</span></legend>
+              <div class="equation" data-equation="vertex"></div>
+              <div class="control">
+                <label for="slider-h">h</label>
+                <input type="range" id="slider-h" data-param="h" data-form="vertex" min="-10" max="10" step="0.1" />
+                <output data-param="h"></output>
+              </div>
+              <div class="control">
+                <label for="slider-k">k</label>
+                <input type="range" id="slider-k" data-param="k" data-form="vertex" min="-10" max="10" step="0.1" />
+                <output data-param="k"></output>
+              </div>
+            </fieldset>
+
+            <fieldset>
+              <legend>Factored form <span class="template">y = a(x − r₁)(x − r₂)</span></legend>
+              <div class="equation" data-equation="factored"></div>
+              <div class="control">
+                <label for="slider-r1">r₁</label>
+                <input type="range" id="slider-r1" data-param="r1" data-form="factored" min="-10" max="10" step="0.1" />
+                <output data-param="r1"></output>
+              </div>
+              <div class="control">
+                <label for="slider-r2">r₂</label>
+                <input type="range" id="slider-r2" data-param="r2" data-form="factored" min="-10" max="10" step="0.1" />
+                <output data-param="r2"></output>
+              </div>
+            </fieldset>
+          </div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
